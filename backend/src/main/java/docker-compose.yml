@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   postgres-db:
-    image: postgres:latest
+    image: postgres:17
     container_name: coweave-postgres
     restart: unless-stopped
     environment:
@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: sonu1234
       POSTGRES_DB: coweave_db
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
