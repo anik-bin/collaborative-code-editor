@@ -6,6 +6,18 @@ import lombok.Data;
 public class CodeEditMessage {
     private String documentId;  // this tells which files are they editing
     private String content;  // this tells the actual code they typed
-    private String sender;  // this tells who typed it
+    private String sender;  // this tells who typed
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public String getSender() {
+        return sender;
+    }
 
 }
