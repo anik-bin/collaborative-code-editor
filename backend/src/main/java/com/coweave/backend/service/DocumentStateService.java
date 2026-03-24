@@ -13,7 +13,7 @@ public class DocumentStateService {
     }
 
     // this saves the latest code to redis
-    public void saveDocumentContent(String documentId, String content) {
+    public void saveDocumentState(String documentId, String content) {
         redisTemplate.opsForValue().set("doc:" + documentId, content);
     }
 
