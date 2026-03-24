@@ -34,7 +34,7 @@ export const useCodeEditor = (documentId: string, currentUser: string) =>
                 setIsConnected(true);
 
                 // subscribe to broadcast channel code
-                client.subscribe('/topic/document/${documentId}', (message)=> {
+                client.subscribe(`/topic/document/${documentId}`, (message)=> {
                     const receivedData = JSON.parse(message.body);
 
 
