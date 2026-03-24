@@ -1,61 +1,72 @@
 'use client';
-
-import React, { useMemo } from 'react';
-import Editor from '@monaco-editor/react';
-import { useCodeEditor } from '@/hooks/useCodeEditor';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  // Hardcode a room for testing (we will make this dynamic later)
-  const documentId = 'doc-123';
+  const [username, setUsername] = useState('');
+  const [roomId, setRoomId] = useState('');
+  const router = useRouter();
 
-  // Generate a random user ID on load so you can test with multiple tabs
-  const currentUser = useMemo(() => `User_${Math.floor(Math.random() * 10000)}`, []);
+  const handleJoinRoom = (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Prevent the page from reloading on submit
 
-  //Bring in our custom real-time engine
-  const { code, isConnected, sendCodeUpdate } = useCodeEditor(documentId, currentUser);
+    if (username.trim() && roomId.trim()) {
 
-  //Handle typing in the editor
-  const handleEditorChange = (value: string | undefined) => {
-    if (value !== undefined) {
-      sendCodeUpdate(value);
+      // Clean up the room ID
+      const cleanRoomId = roomId.trim().toLowerCase().replace(/\s+/g, '-');
+      const cleanUser = encodeURIComponent(username.trim());
+
+      // Navigate the user to their custom workspace URL
+      router.push(`/${cleanRoomId}?user=${cleanUser}`);
     }
   };
 
   return (
-    <main className="flex h-screen flex-col bg-[#1e1e1e] text-white">
-      {/* Header Bar */}
-      <header className="flex items-center justify-between bg-[#2d2d2d] px-6 py-3 border-b border-gray-700">
-        <div className="flex items-center gap-4">
-          <h1 className="text-xl font-bold text-blue-400">CoWeave</h1>
-          <span className="text-sm text-gray-400 border-l border-gray-600 pl-4">
-            Room: {documentId}
-          </span>
+    <main className="flex min-h-screen items-center justify-center bg-gray-900 px-4 text-white">
+      <div className="w-full max-w-md rounded-xl bg-gray-800 p-8 shadow-2xl border border-gray-700">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-blue-400 mb-2">CoWeave</h1>
+          <p className="text-gray-400">Real-time collaborative code editor</p>
         </div>
 
-        {/* Connection Status Indicator */}
-        <div className="flex items-center gap-2">
-          <div className={`h-3 w-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
-          <span className="text-sm font-medium text-gray-300">
-            {isConnected ? 'Connected' : 'Disconnected'}
-          </span>
-        </div>
-      </header>
+        <form onSubmit={handleJoinRoom} className="space-y-6">
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
+              Display Name
+            </label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full rounded-lg bg-gray-900 border border-gray-600 px-4 py-3 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
+              placeholder="e.g. Alex"
+              required
+            />
+          </div>
 
-      {/* The Monaco Editor */}
-      <div className="flex-grow w-full pt-4">
-        <Editor
-          height="100%"
-          defaultLanguage="javascript"
-          theme="vs-dark"
-          value={code} // This binds the editor to our WebSocket state
-          onChange={handleEditorChange} // This fires our debounce function when you type
-          options={{
-            minimap: { enabled: false },
-            fontSize: 16,
-            wordWrap: 'on',
-            padding: { top: 16 }
-          }}
-        />
+          <div>
+            <label htmlFor="roomId" className="block text-sm font-medium text-gray-300 mb-2">
+              Room ID
+            </label>
+            <input
+              id="roomId"
+              type="text"
+              value={roomId}
+              onChange={(e) => setRoomId(e.target.value)}
+              className="w-full rounded-lg bg-gray-900 border border-gray-600 px-4 py-3 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
+              placeholder="e.g. daily-standup"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all"
+          >
+            Join Workspace
+          </button>
+        </form>
       </div>
     </main>
   );
