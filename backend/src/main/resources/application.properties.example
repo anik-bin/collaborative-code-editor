@@ -3,8 +3,8 @@ spring.application.name=coweave-backend
 
 # PostgreSQL Connection Settings
 spring.datasource.url=jdbc:postgresql://localhost:5433/coweave_db
-spring.datasource.username=postgres
-spring.datasource.password=sonu1234
+spring.datasource.username=YOUR_DB_USERNAME_HERE
+spring.datasource.password=YOUR_DB_PASSWORD_HERE
 
 # Hibernate (JPA) Settings
 spring.jpa.hibernate.ddl-auto=update
